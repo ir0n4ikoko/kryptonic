@@ -34,7 +34,9 @@ setuptools.setup(
     # As you `pip install` dependencies, be sure to add them to this list.
     # This should be the minimal requirements
     # See https://packaging.python.org/discussions/install-requires-vs-requirements/
-    install_requires=[],
+    install_requires=[
+        'selenium==3.141.0',
+        'xmlrunner==1.7.7'], 
 
     packages=setuptools.find_packages(),
     classifiers=[
