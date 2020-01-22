@@ -4,7 +4,7 @@ This should be run with `python setup.py sdist bdist_wheel`
 
 import setuptools
 
-version = '0.0.1' # This version will need to be updated with every new merge
+version = '0.4.0' # This version will need to be updated with every new merge
 
 
 with open("README.md", "r") as fh:
@@ -14,7 +14,7 @@ setuptools.setup(
 
     # name: The name of the package. This should be the same name as the directory it is in
     # this name will be used by other applications via `import name` or `from name import ...`
-    name='pytonium',
+    name='untapt_pytonium',
 
     version=version,
 
@@ -35,6 +35,7 @@ setuptools.setup(
     # This should be the minimal requirements
     # See https://packaging.python.org/discussions/install-requires-vs-requirements/
     install_requires=[
+        'pymongo',
         'selenium==3.141.0',
         'xmlrunner==1.7.7'], 
 

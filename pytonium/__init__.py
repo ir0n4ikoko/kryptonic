@@ -1,4 +1,6 @@
-# from .kryptonictest import KryptonicTestCase
+
+from .krtest import *
+
 from pprint import pprint
 import inspect
 from .options import Config

@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE
 import unittest
 from selenium.webdriver import Firefox, FirefoxProfile
 from selenium.webdriver.firefox.options import Options
-# from config import Config
+from .options import Config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,7 +15,7 @@ MONGO_URI = 'localhost:27017' # TODO: A centralized place for the mongouri, modi
 MONGO_DB = 'untapt_krypton'
 
 #TODO: Refactor method extentions to a new KryptonMethods class and use multiple inheritance to Krypton<driver> classes
-class KryptonicFirefox(Firefox):
+class KrFirefox(Firefox):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,7 +46,7 @@ class KryptonicFirefox(Firefox):
             raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
 
 
-class KryptonicTestCase(unittest.TestCase):
+class KrTestCase(unittest.TestCase):
 
     config_options = Config().options
 
@@ -72,7 +72,7 @@ class KryptonicTestCase(unittest.TestCase):
         profile.set_preference('security.fileuri.strict_origin_policy', False)
         o = Options()
         o.set_headless(self.config_options['headless'])
-        return KryptonFirefox(firefox_profile=profile, options=o)
+        return KrFirefox(firefox_profile=profile, options=o)
 
     def _cleanupDbWrites(self):
         client = MongoClient(MONGO_URI)
