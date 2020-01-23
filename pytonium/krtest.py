@@ -22,7 +22,7 @@ class KrFirefox(Firefox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def wait_for_element(self, id=None, css_selector=None, class_name=None, xpath=None, link_text=None, timeout=20 ):
+    def wait_for_element(self, id=None, css_selector=None, class_name=None, xpath=None, link_text=None, timeout=20, optional=True ):
         if id:
             by = By.ID
             selector = id
@@ -44,8 +44,12 @@ class KrFirefox(Firefox):
         try:
             return WebDriverWait(self, timeout).until(EC.presence_of_element_located((by, selector)))
         except TimeoutException as ex:
-            log.error(f'wait_for_element: Timeout while waiting for element {selector}')
-            raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
+            if optional is True:
+                log.info(f'wait_for_element: Timeout waiting for "{selector}" but doing nothing because "optional" is True')
+            else:
+                log.error(f'wait_for_element: Timeout while waiting for element {selector}')
+                raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
+
 
     def get_path(self, path):
         self.get(self.config_options['url'] + path)
