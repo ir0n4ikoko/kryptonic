@@ -24,3 +24,4 @@ class Config(metaclass=Singleton):
                 log.warning(f'kr WARN: option {key} is not a valid option. Skipping')
                 continue
             self.options[key] = value
+

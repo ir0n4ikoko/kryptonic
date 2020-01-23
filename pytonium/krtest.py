@@ -17,6 +17,8 @@ MONGO_DB = 'untapt_krypton'
 #TODO: Refactor method extentions to a new KryptonMethods class and use multiple inheritance to Krypton<driver> classes
 class KrFirefox(Firefox):
 
+    config_options = Config().options
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -45,9 +47,11 @@ class KrFirefox(Firefox):
             log.error(f'wait_for_element: Timeout while waiting for element {selector}')
             raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
 
+    def get_path(self, path):
+        self.get(self.config_options['url'] + path)
+
 
 class KrTestCase(unittest.TestCase):
-
     config_options = Config().options
 
     @classmethod
@@ -57,7 +61,6 @@ class KrTestCase(unittest.TestCase):
         for path, dirs, files in os.walk(f'./scenarios/{cls.__module__}'):
             if path[-8:] == '__data__':
                 cls._runNodeWithDbAccess(path, 'preTest.js')
-
 
             print(path, dirs, files)
 
@@ -90,7 +93,6 @@ class KrTestCase(unittest.TestCase):
             stdout, stderr = js.communicate()
             log.debug(f'{self.__module__}/__data__/setUp.js:{stdout}')
 
-
         self.url = self.config_options['url']
         self.cleanup = self.config_options['cleanup']
         self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
@@ -107,3 +109,4 @@ class KrTestCase(unittest.TestCase):
             pass
         elif self.config_options['cleanup'] == 'always':
             self.driver.quit()
+

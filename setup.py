@@ -4,7 +4,7 @@ This should be run with `python setup.py sdist bdist_wheel`
 
 import setuptools
 
-version = '0.4.0' # This version will need to be updated with every new merge
+version = '0.6.0' # This version will need to be updated with every new merge
 
 
 with open("README.md", "r") as fh:
