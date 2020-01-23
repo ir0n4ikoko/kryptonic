@@ -1,5 +1,6 @@
 
 from .krtest import *
+from . import keys
 
 from pprint import pprint
 import inspect
@@ -8,7 +9,7 @@ from unittest import TestLoader, TextTestRunner
 from xmlrunner import XMLTestRunner
 from os import path
 
-from selenium.webdriver.common import keys
+# from selenium.webdriver.common import keys as keys
 
 
 def main(pattern='test*.py', config=None, argv=None):
