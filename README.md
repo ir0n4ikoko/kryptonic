@@ -40,10 +40,10 @@ class TestFoo(KrFirefox):
 
 ```
 
-#### Invoking the  `--config` option in the cli (3):
+#### Invoking the  `--config-args` option in the cli (3):
 
 ```shell
-python -m pytonium discover --config url=http://localhost:5000,custom_option=1
+python -m pytonium discover --config-args url=http://localhost:5000,custom_option=1
 ```
 
 #### 

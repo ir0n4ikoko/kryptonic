@@ -13,7 +13,7 @@ class Config(metaclass=Singleton):
         'url': 'http://localhost:5000',
         'headless': False,
         'cleanup': 'always',
-        'cleanup_db_writes': 'always'
+        'cleanup_db_writes': 'always' #TODO: this is the mongo extension
     }
 
     def __init__(self, **kwargs):

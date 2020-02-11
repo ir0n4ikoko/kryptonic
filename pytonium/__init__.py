@@ -1,6 +1,9 @@
 
+# Main unit test definitions. Mimicks python's unittest
 from .krtest import *
 from . import keys
+
+import unittest
 
 from pprint import pprint
 import inspect
@@ -12,7 +15,17 @@ from os import path
 # from selenium.webdriver.common import keys as keys
 
 
-def main(pattern='test*.py', config=None, argv=None):
+def main(pattern='test*.py', config=None, argv=None, start_directory='.', config_file=None, config_args=None):
+    """
+    Arguments in main should map to the cli arguments in __main__.py, so that pytonium suites can run via
+    cli or python.
+
+    :param pattern: files to match when discovering unit tests.
+    :param config: Dict of config options
+    :param argv:
+    :param start_directory: the start directory to search in, default '.'
+    :param config_file: json file to load config options from
+    """
     #FIXME:
     if config is None:
         config = {}
@@ -27,4 +40,3 @@ def main(pattern='test*.py', config=None, argv=None):
     runner.run(tests)
 
     pprint(config_options.options)
-
