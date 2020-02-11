@@ -15,7 +15,8 @@ from os import path
 # from selenium.webdriver.common import keys as keys
 
 
-def main(pattern='test*.py', config=None, argv=None, start_directory='.', config_file=None, config_args=None):
+def main(pattern='test*.py', config=None, argv=None, start_directory='.', config_file=None, config_args=None,
+         config_json=None):
     """
     Arguments in main should map to the cli arguments in __main__.py, so that pytonium suites can run via
     cli or python.
