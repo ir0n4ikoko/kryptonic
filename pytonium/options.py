@@ -21,7 +21,16 @@ class Config(metaclass=Singleton):
         options_names = self.DEFAULT_OPTIONS.keys()
         for key, value in kwargs.items():
             if key not in options_names:
-                log.warning(f'kr WARN: option {key} is not a valid option. Skipping')
+                log.warning(f'kr WARN: option {key} is not a valid option. Skipping.')
                 continue
+            self.options[key] = value
+
+    def overwrite_options(self, **kwargs):
+        options_names = self.DEFAULT_OPTIONS.keys()
+        for key, value in kwargs.items():
+            if key not in options_names:
+                log.warning(f'kr WARN: option {key} is not a valid option. Skipping.')
+                continue
+            log.debug(f'Overwriting config option {key} to be {value} (was {self.options[key]})')
             self.options[key] = value
 

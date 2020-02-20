@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
+
 import logging as log
 from pymongo import MongoClient
 
@@ -42,7 +43,8 @@ class KrFirefox(Firefox):
             raise ValueError("wait_for_element must use one kwarg of: css_selector, class_name, xpath, link_text")
 
         try:
-            return WebDriverWait(self, timeout).until(EC.presence_of_element_located((by, selector)))
+            return KrWebElementWrapper(
+                WebDriverWait(self, timeout).until(EC.presence_of_element_located((by, selector))))
         except TimeoutException as ex:
             if optional is True:
                 log.info(f'wait_for_element: Timeout waiting for "{selector}" but doing nothing because "optional" is True')
@@ -53,6 +55,24 @@ class KrFirefox(Firefox):
 
     def get_path(self, path):
         self.get(self.config_options['url'] + path)
+
+
+class KrWebElementWrapper:
+
+    def __init__(self, webelement):
+        self.webelement = webelement
+
+    def __getattr__(self, item):
+        return getattr(self.unwrap(), item)
+
+    def send_keys(self, *value):
+        try:
+            return self.unwrap().send_keys(*value)
+        except TypeError as e:
+            raise TypeError("Don't know how to send this type to web element\n", e)
+
+    def unwrap(self):
+        return self.webelement
 
 
 class KrTestCase(unittest.TestCase):
@@ -88,8 +108,6 @@ class KrTestCase(unittest.TestCase):
         for collection_name in db.collection_names():
             db[collection_name].remove({'_kryptonData': {'$exists': True}}, multi=True)
 
-
-
     def setUp(self):
         if os.path.exists(f'./scenarios/{self.__module__}/__data__/setUp.js'):
             log.debug('setUp.js hook detected')
@@ -102,11 +120,9 @@ class KrTestCase(unittest.TestCase):
         self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
         # print(self.__module__) TODO: this is the name that should be used with errors
 
-
-
     def tearDown(self):
-        if self.config_options.get('cleanup_db_writes', 'always') == 'always':
-            self._cleanupDbWrites()
+        # if self.config_options.get('cleanup_db_writes', 'always') == 'always':
+        #     self._cleanupDbWrites()
 
         if self.config_options['cleanup'] == 'onfailure':
             # logic for test case

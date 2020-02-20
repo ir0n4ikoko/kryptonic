@@ -1,4 +1,3 @@
-
 # Main unit test definitions. Mimicks python's unittest
 from .krtest import *
 from . import keys
@@ -9,16 +8,13 @@ from pprint import pprint
 import inspect
 from .options import Config
 from unittest import TestLoader, TextTestRunner
-from xmlrunner import XMLTestRunner
-from os import path
+from os import path, getcwd
 import logging
 import json
 
-# from selenium.webdriver.common import keys as keys
 
-
-def main(pattern='test*.py', config=None, argv=None, start_directory='.', config_file=None, config_args=None,
-         config_json=None):
+def main(pattern='test*.py', config={}, argv=None, start_directory='.', config_file=None, config_args=None,
+         config_json=None, test_runner=TextTestRunner()):
     """
     Arguments in main should map to the cli arguments in __main__.py, so that pytonium suites can run via
     cli or python.
@@ -29,24 +25,31 @@ def main(pattern='test*.py', config=None, argv=None, start_directory='.', config
     :param start_directory: the start directory to search in, default '.'
     :param config_file: json file to load config options from
     """
-    #FIXME:
     if config is None:
         config = {}
 
-    _CALLEE__FILE__ = inspect.getmodule(inspect.stack()[1][0]).__file__  # https://stackoverflow.com/a/13699329
+    print(f' name is {__name__}, path is {getcwd()}')
+
+    # _CALLEE__FILE__ = inspect.getmodule(inspect.stack()[1][0]).__file__  # https://stackoverflow.com/a/13699329
     config_options = Config()
     config_options.__init__(**config)
+    update_config_from_environment_variables(config_options)
+    update_config_form_json(config_options, config_json)
+    update_config_from_args(config_options, config_args)
+
+    resolve_config_arguments(config_options)
 
     test_loader = TestLoader()
-    runner = XMLTestRunner(output='test-reports') #FIXME conditional to switch to TextRunner IF config_options.options.get('test-runner', '') (see unlocked/test/UI/discover.py:22
-    tests = test_loader.discover(f'{path.dirname(path.abspath(_CALLEE__FILE__))}/scenarios', pattern=pattern)
-    runner.run(tests)
+    tests = test_loader.discover(f'{getcwd()}/{start_directory}', pattern=pattern)
 
-    pprint(config_options.options)
+    print()
+    print('⚗️ Pytonium Test config:\n')
+    print(json.dumps(config_options.options, indent=2))
+
+    test_runner.run(tests)
 
 
-def resolve_config_arguments():
-    config = Config()
+def resolve_config_arguments(config: Config):
     update_config_from_environment_variables(config)
 
 
@@ -58,7 +61,7 @@ def update_config_from_environment_variables(config: Config):
         if value is not None:
             try:
                 key = env.replace('KR_', '').lower()
-                Config.DEFAULT_OPTIONS[key] = value
+                config.DEFAULT_OPTIONS[key] = value
             except KeyError:
                 logging.warning(f'KR_WARNING: Config option {key} tried to be set from environment variable {env} but is not a valid option. Skipping.')
 
@@ -66,17 +69,16 @@ def update_config_from_environment_variables(config: Config):
 def update_config_from_file(file):
     pass
 
+
 def update_config_form_json(config: Config, jsn: str):
+    if jsn is None:
+        return
     args = json.loads(jsn)
-    update_config_from_dict(args)
+    config.overwrite_options(**args)
+
 
 def update_config_from_args(config: Config, args: str):
+    if args is None:
+        return
     _args = map(lambda x: x.split(','), args.split('='))
-    update_config_from_dict(dict(_args))
-
-def update_config_from_dict(config: Config, dictionary):
-    for key, value in dictionary:
-        try:
-            config.options[key] = value
-        except KeyError:
-            logging.warning(f'KR_WARNING: Config option {key} tried to be set but is not a valid option. Skipping')
+    config.overwrite_options()
