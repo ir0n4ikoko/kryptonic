@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
+from time import sleep
 
 import logging as log
 from pymongo import MongoClient
@@ -40,7 +41,7 @@ class KrFirefox(Firefox):
             by = By.LINK_TEXT
             selector = link_text
         else:
-            raise ValueError("wait_for_element must use one kwarg of: css_selector, class_name, xpath, link_text")
+            raise ValueError("wait_for_element must use one kwarg of: id, css_selector, class_name, xpath, link_text")
 
         try:
             return KrWebElementWrapper(
@@ -48,6 +49,7 @@ class KrFirefox(Firefox):
         except TimeoutException as ex:
             if optional is True:
                 log.info(f'wait_for_element: Timeout waiting for "{selector}" but doing nothing because "optional" is True')
+                return KrMissingElement()
             else:
                 log.error(f'wait_for_element: Timeout while waiting for element {selector}')
                 raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
@@ -65,14 +67,32 @@ class KrWebElementWrapper:
     def __getattr__(self, item):
         return getattr(self.unwrap(), item)
 
+    def click(self):
+        self.unwrap().click()
+        return self
+
     def send_keys(self, *value):
         try:
-            return self.unwrap().send_keys(*value)
+            self.unwrap().send_keys(*value)
+            return self
         except TypeError as e:
             raise TypeError("Don't know how to send this type to web element\n", e)
 
+    def wait(self, seconds):
+        sleep(seconds)
+        return self
+
     def unwrap(self):
         return self.webelement
+
+
+class KrMissingElement:
+
+    def noop(self, *args, **kwargs):
+        return None
+
+    def __getattr__(self, item):
+        return self.noop
 
 
 class KrTestCase(unittest.TestCase):

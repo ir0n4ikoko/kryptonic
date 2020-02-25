@@ -28,8 +28,6 @@ def main(pattern='test*.py', config={}, argv=None, start_directory='.', config_f
     if config is None:
         config = {}
 
-    print(f' name is {__name__}, path is {getcwd()}')
-
     # _CALLEE__FILE__ = inspect.getmodule(inspect.stack()[1][0]).__file__  # https://stackoverflow.com/a/13699329
     config_options = Config()
     config_options.__init__(**config)
@@ -80,5 +78,6 @@ def update_config_form_json(config: Config, jsn: str):
 def update_config_from_args(config: Config, args: str):
     if args is None:
         return
-    _args = map(lambda x: x.split(','), args.split('='))
-    config.overwrite_options()
+    _args = {key: value for key, value in [pair.split('=') for pair in args.split(',')]}
+    # _args = map(lambda x: x.split(','), args.split('='))
+    config.overwrite_options(**_args)
