@@ -4,7 +4,7 @@ This should be run with `python setup.py sdist bdist_wheel`
 
 import setuptools
 
-version = '0.7.1' # This version will need to be updated with every new merge
+version = '0.9.0' # This version will need to be updated with every new merge
 
 
 with open("README.md", "r") as fh:
@@ -37,7 +37,7 @@ setuptools.setup(
     install_requires=[
         'pymongo',
         'selenium==3.141.0',
-        'xmlrunner==1.7.7'], 
+        'xmlrunner==1.7.7'],
 
     packages=setuptools.find_packages(),
     classifiers=[
