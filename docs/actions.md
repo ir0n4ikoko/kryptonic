@@ -1,6 +1,6 @@
-# Basic actions with kryptonium
+# Basic actions with kryptonic
 
-Kryptonium automatically binds all selenium methods to the `self.driver` instance in a test suite. Additionally, there are higher-order methods that make testing simpler and more readable.
+Kryptonic automatically binds all selenium methods to the `self.driver` instance in a test suite. Additionally, there are higher-order methods that make testing simpler and more readable.
 
 There are many actions you can take on a web page. We will cover the following five common actions.
 
@@ -59,10 +59,10 @@ self.driver.wait_for_element(id='username').send_keys('nick@untapt.com')
 
 #### Special Keys
 
-non-character keys (such as Enter) can be imported from `kryptonium.keys`.
+non-character keys (such as Enter) can be imported from `kryptonic.keys`.
 
 ```python
-from kryptonium.keys import Keys
+from kryptonic.keys import Keys
 self.driver.wait_for_element(id='username').send_keys(
                                                     'nick@untapt.com',
                                                     Key.TAB)

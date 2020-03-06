@@ -16,7 +16,7 @@ import json
 def main(pattern='test*.py', config={}, argv=None, start_directory='.', config_file=None, config_args=None,
          config_json=None, test_runner=TextTestRunner()):
     """
-    Arguments in main should map to the cli arguments in __main__.py, so that kryptonium suites can run via
+    Arguments in main should map to the cli arguments in __main__.py, so that kryptonic suites can run via
     cli or python.
 
     :param pattern: files to match when discovering unit tests.

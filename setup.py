@@ -14,7 +14,7 @@ setuptools.setup(
 
     # name: The name of the package. This should be the same name as the directory it is in
     # this name will be used by other applications via `import name` or `from name import ...`
-    name='kryptonium',
+    name='kryptonic',
 
     version=version,
 
@@ -26,10 +26,10 @@ setuptools.setup(
     # description: a short description of the package. It should not exceed the length of this comment you're reading.
     description='Easy UI testng in the spirit of python\'s own unittest module',
     # update the README.md file for the long_description
-    long_description=long_description,
+    long_description='',
 
     # url: can leave blank
-    url='github.com/untapt/kryptonium',
+    url='https://github.com/untapt/kryptonic',
 
     # As you `pip install` dependencies, be sure to add them to this list.
     # This should be the minimal requirements
@@ -44,6 +44,5 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Development Status :: 2 - Pre-Alpha",
         "Topic :: Software Development :: Testing",
-        "Topic :: Software Development :: Acceptance"
     ],
 )

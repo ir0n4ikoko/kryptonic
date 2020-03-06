@@ -1,6 +1,6 @@
-## Kryptonium
+## kryptonic
 
-Python unittest bindings for Kryptonium -- write UI tests in the spirit of python's `unittest` module.
+Python unittest bindings for Kryptonic -- write UI tests in the spirit of python's `unittest` module.
 
 
 ## Getting Started
