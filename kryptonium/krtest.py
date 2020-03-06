@@ -12,6 +12,7 @@ from time import sleep
 
 import logging as log
 from pymongo import MongoClient
+from collections import ChainMap
 
 MONGO_URI = 'localhost:27017' # TODO: A centralized place for the mongouri, modifiable by config and options.py
 MONGO_DB = 'untapt_krypton'
@@ -54,6 +55,9 @@ class KrFirefox(Firefox):
                 log.error(f'wait_for_element: Timeout while waiting for element {selector}')
                 raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
 
+    @property
+    def url(self):
+        return self.current_url
 
     def get_path(self, path):
         self.get(self.config_options['url'] + path)
@@ -96,7 +100,13 @@ class KrMissingElement:
 
 
 class KrTestCase(unittest.TestCase):
-    config_options = Config().options
+    # config_options = Config().options
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance_config = getattr(self.__class__, 'config', {})
+        self.config_options = ChainMap(instance_config, Config().options)
+
 
     @classmethod
     def setUpClass(cls):
@@ -135,9 +145,12 @@ class KrTestCase(unittest.TestCase):
             stdout, stderr = js.communicate()
             log.debug(f'{self.__module__}/__data__/setUp.js:{stdout}')
 
+        log.debug(f'config_options for {self}:\n{self.config_options}')
         self.url = self.config_options['url']
         self.cleanup = self.config_options['cleanup']
         self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
+        if 'url' in self.config_options:
+            self.driver.get(self.config_options['url'])
         # print(self.__module__) TODO: this is the name that should be used with errors
 
     def tearDown(self):
