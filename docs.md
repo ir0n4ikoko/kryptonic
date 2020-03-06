@@ -1,4 +1,4 @@
-## Pytonium
+## Kryptonium
 
 Python unittest bindings for Kryptonium -- write UI tests in the spirit of python's `unittest` module.
 

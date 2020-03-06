@@ -1,5 +1,5 @@
 """
-Module entrypoint. Ran with `python -m pytonium
+Module entrypoint. Ran with `python -m kryptonium
 """
 
 from argparse import ArgumentParser

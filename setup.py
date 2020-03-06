@@ -14,7 +14,7 @@ setuptools.setup(
 
     # name: The name of the package. This should be the same name as the directory it is in
     # this name will be used by other applications via `import name` or `from name import ...`
-    name='untapt_pytonium',
+    name='kryptonium',
 
     version=version,
 
@@ -29,7 +29,7 @@ setuptools.setup(
     long_description=long_description,
 
     # url: can leave blank
-    url='untapt.github.io/kryptonium',
+    url='github.com/untapt/kryptonium',
 
     # As you `pip install` dependencies, be sure to add them to this list.
     # This should be the minimal requirements

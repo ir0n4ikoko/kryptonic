@@ -1,4 +1,4 @@
-# pytonium - function test library for the kryptonium environment.
+# kryptonium - function test library for the kryptonium environment.
 
 ## Setup
 
@@ -19,7 +19,7 @@ class TestMath(TestCase):
 ```
 
 ```python
-from pytonium import KrTestCase
+from kryptonium import KrTestCase
 
 class TestMath(KrTestCase):
 
@@ -30,10 +30,10 @@ class TestMath(KrTestCase):
 Pytonic tests can be ran from the command line, in a similar way to unittest:
 
 ```shell
-$ python -m pytonium
+$ python -m kryptonium
 ```
 
-This tells pytonium to search for all tests suites from the current directory.
+This tells kryptonium to search for all tests suites from the current directory.
 
 ### Selenium webdriver
 
@@ -55,9 +55,9 @@ class Test(KrTestCase):
 You can run test suites in ways similar to unittest. For example, to write a script that tests upon execution
 
 ```python
-import pytonium
+import kryptonium
 
-class Test(pytonium.KrTestCase):
+class Test(kryptonium.KrTestCase):
 
     def test_visit_google(self):
         self.driver.get('https://google.com')
@@ -70,7 +70,7 @@ class Test(pytonium.KrTestCase):
         
 
 if __name__ == '__main__':
-    pytonium.main()
+    kryptonium.main()
 
 ```
 
@@ -104,7 +104,7 @@ class Test(KrTestCase):
 Each test suite navigates to the same url. This can be automated by setting the `url` option to a default location to visit:
 
 ```shell
-python -m pytonium --config-args url=https://example.com
+python -m kryptonium --config-args url=https://example.com
 ```
 
 When running in this way, the previous test suites can be refactored to:
@@ -141,12 +141,12 @@ KR_URL=http://localhost:5000
 KR_CUSTOM_OPTION=1
 ```
 
-#### Passing a dict to pytonium.main (1)
+#### Passing a dict to kryptonium.main (1)
 
 ```python3
-from pytonium import pytonium
+from kryptonium import kryptonium
 
-pytonium.main(config={
+kryptonium.main(config={
     'url': 'http://localhost:5000',
     'custom_option': 1
 })
@@ -155,7 +155,7 @@ pytonium.main(config={
 #### Setting a Test Suite's `config` attribute (2):
 
 ```python3
-from pytonium import KrFirefox
+from kryptonium import KrFirefox
 
 class TestFoo(KrFirefox):
     
@@ -169,11 +169,11 @@ class TestFoo(KrFirefox):
 #### Invoking the  `--config-args` option in the cli (3):
 
 ```shell
-python -m pytonium discover --config-args url=http://localhost:5000,custom_option=1
+python -m kryptonium discover --config-args url=http://localhost:5000,custom_option=1
 ```
 
 #### 
 
 ## Testing hooks (setup, teardown)
 
-Pytonium mimick the `unittest.TestCase` `setUp` and `tearDown` methods.
+Kryptonium mimick the `unittest.TestCase` `setUp` and `tearDown` methods.
