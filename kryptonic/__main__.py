@@ -22,8 +22,6 @@ parser.add_argument('-s', '--start-directory', type=str, help='Directory to star
 
 args = parser.parse_args()
 
-
-print('args ', args )
 main(pattern=args.pattern,
      start_directory=args.start_directory,
      config_file=args.config_file,
