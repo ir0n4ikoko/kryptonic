@@ -1,4 +1,5 @@
 *.egg-info
+docs/build
 build
 dist
 **/.DS_Store
