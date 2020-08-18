@@ -41,7 +41,7 @@ def main(pattern='test*.py', config={}, argv=None, start_directory='.', config_f
     tests = test_loader.discover(f'{getcwd()}/{start_directory}', pattern=pattern)
 
     print()
-    print('⚗️ Pytonium Test config:\n')
+    print('⚗️ Kryptonic Test config:\n')
     print(json.dumps(config_options.options, indent=2))
 
     test_runner.run(tests)
