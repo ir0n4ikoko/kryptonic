@@ -4,7 +4,7 @@ This should be run with `python setup.py sdist bdist_wheel`
 
 import setuptools
 
-version = '0.9.0' # This version will need to be updated with every new merge
+version = '0.9.0' # This version will need to be updated with every new merge to candidate or stable
 
 
 with open("README.md", "r") as fh:
@@ -20,8 +20,7 @@ setuptools.setup(
 
     # author: You! Add your name.
     author='Nick Palenchar',
-    # author_email: use your untapt email
-    author_email='nick@untapt.com',
+    author_email='nickpal@nickpalenchar.com',
 
     # description: a short description of the package. It should not exceed the length of this comment you're reading.
     description='Easy UI testng in the spirit of python\'s own unittest module',
