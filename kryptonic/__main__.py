@@ -4,8 +4,11 @@ Module entrypoint. Ran with `python -m kryptonic
 
 from argparse import ArgumentParser
 from . import main
+import sys
 
-parser = ArgumentParser(description="Run UI tests")
+base_executable = sys._base_executable.split('/')[-1:][0] if sys._base_executable else 'python'
+
+parser = ArgumentParser(prog=f'{base_executable} -m kryptonic', description="Run UI tests")
 
 parser.add_argument('-F', '--config-file', type=str, default=None, help='Name of json file containing configuration as key/value pairs')
 
