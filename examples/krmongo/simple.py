@@ -5,7 +5,7 @@ removes them while keeping the "real" ones intact.
 This example assumes a local mongo connection
 """
 from kryptonic.krmongo import KrMongoClient
-from pymongo import MongoClient # for test data
+from ._skaffold import setup_sample_data
 
 HOST = 'localhost'
 PORT = 27027
@@ -32,26 +32,6 @@ def main():
 
     input('Test data removed. Inspect as desired\n'
           f'Press enter to end the demo and drop database {DATABASE}')
-
-
-def setup_sample_data():
-    """
-    This data is the 'real' data that gets populated for demonstrative purposes. It
-    would not be needed in a real situation
-    """
-    from pymongo import MongoClient
-    client = MongoClient(host=HOST, port=PORT)
-    db = client.get_database(DATABASE)
-    db.users.insert_many([
-        {'name': 'Nick', 'email': 'nick@example.com'},
-        {'name': 'Ben', 'email': 'ben@example.com'}
-    ])
-    db.wiiGames.insert_many([
-        {'name': 'Wii Sports', 'price': 45, 'digital': False}
-    ])
-
-    return client
-
 
 if __name__ == '__main__':
     client = setup_sample_data()

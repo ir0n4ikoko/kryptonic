@@ -71,14 +71,14 @@ def krmongorun(run_id=None, *args, **kwargs):
     if run_id is None:
         run_id = _generate_run_id()
 
-    kr_client = BaseMongoClient(*args, **kwargs)
     monitoring.register(KryptonicEvents(run_id, kr_client, *args, **kwargs))
+    kr_client = BaseMongoClient(*args, **kwargs)
     try:
         yield RunInfo(run_id)
     except KrMongoNoCleanup:
         pass
     else:
-        print('take down')
+        _cleanup(kr_client, run_id)
 
 
 def _generate_run_id():
