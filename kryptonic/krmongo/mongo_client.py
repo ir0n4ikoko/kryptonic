@@ -99,5 +99,4 @@ def _cleanup(client: MongoClient, run_id, kr_database=KRYPTONIC_DATABASE, writes
         doc_id = doc['document']['_id']
         client.get_database(database).get_collection(collection).delete_one({'_id': doc_id})
         kr_ids_to_delete.append({'_id': doc['_id']})
-    breakpoint()
     client.get_database(kr_database).get_collection(writes_collection).delete_many({'$or': kr_ids_to_delete})
