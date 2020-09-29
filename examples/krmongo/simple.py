@@ -8,7 +8,7 @@ from kryptonic.krmongo import KrMongoClient
 from _skaffold import setup_sample_data
 
 HOST = 'localhost'
-PORT = 27027
+PORT = 27017
 DATABASE = 'kryptonicDemo'
 
 

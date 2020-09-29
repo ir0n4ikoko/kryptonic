@@ -35,7 +35,6 @@ class KrEnvironment:
                             *args,
                             **kwargs)
 
-
     def activate(self):
 
         def log_save(instance, *args, **kwargs):
