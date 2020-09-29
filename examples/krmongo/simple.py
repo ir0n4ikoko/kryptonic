@@ -5,10 +5,10 @@ removes them while keeping the "real" ones intact.
 This example assumes a local mongo connection
 """
 from kryptonic.krmongo import KrMongoClient
-from ._skaffold import setup_sample_data
+from _skaffold import setup_sample_data
 
 HOST = 'localhost'
-PORT = 27027
+PORT = 27017
 DATABASE = 'kryptonicDemo'
 
 
@@ -34,7 +34,7 @@ def main():
           f'Press enter to end the demo and drop database {DATABASE}')
 
 if __name__ == '__main__':
-    client = setup_sample_data()
+    client = setup_sample_data(host=HOST, port=PORT, db=DATABASE)
     try:
         main()
     finally:
