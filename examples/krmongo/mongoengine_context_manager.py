@@ -1,6 +1,6 @@
 from mongoengine import connect, disconnect_all, Document, StringField
 from kryptonic.krmongo import krmongorun
-from kryptonic.krmongo.mongoengine import kr_activate
+from kryptonic.krmongo.mongoengine import KrEnvironment
 
 
 HOST = 'localhost'
@@ -9,7 +9,8 @@ DATABASE = 'kryptonicDemo'
 
 
 def demo():
-    kr_activate(host=HOST, port=PORT)
+    kr_environment = KrEnvironment(host=HOST, port=PORT)
+    kr_environment.activate()
 
     print(f'The contact manager yields a runInfo tuple, seen here')
     input(f'Query the demo db {DATABASE}, then press Enter to populate with kryptonic data\n')
@@ -19,6 +20,7 @@ def demo():
     input(f'QA user added. Query the db to see a new user document (it should be indistinguishable from others\n'
           f'Press enter to exit krmongo context, which automatically removes documents created within it')
 
+    kr_environment.cleanup()
     input('Context manager exited. Inspect db again to see the original dataset\n'
           f'Press Enter again to conclude demo and drop db {DATABASE}')
 
