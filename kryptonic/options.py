@@ -10,6 +10,8 @@ class Singleton(type):
 class Config(metaclass=Singleton):
 
     DEFAULT_OPTIONS = {
+        'browser': 'Firefox',
+        'timeout': 10,
         'url': 'http://localhost:5000',
         'headless': False,
         'cleanup': 'always',
@@ -33,4 +35,5 @@ class Config(metaclass=Singleton):
                 continue
             log.debug(f'Overwriting config option {key} to be {value} (was {self.options[key]})')
             self.options[key] = value
+
 

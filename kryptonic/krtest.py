@@ -1,13 +1,13 @@
 import os
 from subprocess import Popen, PIPE
 import unittest
-from selenium.webdriver import Firefox, FirefoxProfile
+from selenium.webdriver import Firefox, FirefoxProfile, Remote, Chrome, ChromeOptions
 from selenium.webdriver.firefox.options import Options
 from .options import Config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException,NoSuchElementException,ElementNotVisibleException,ElementNotInteractableException
 from time import sleep
 
 import logging as log
@@ -18,7 +18,7 @@ MONGO_URI = 'localhost:27017' # TODO: A centralized place for the mongouri, modi
 MONGO_DB = 'untapt_krypton'
 
 #TODO: Refactor method extentions to a new KryptonMethods class and use multiple inheritance to Krypton<driver> classes
-class KrFirefox(Firefox):
+class KrDriver(Firefox):
 
     config_options = Config().options
 
@@ -33,7 +33,7 @@ class KrFirefox(Firefox):
             by = By.CSS_SELECTOR
             selector = css_selector
         elif class_name:
-            by = class_name
+            by = By.CLASS_NAME
             selector = class_name
         elif xpath:
             by = By.XPATH
@@ -54,6 +54,54 @@ class KrFirefox(Firefox):
             else:
                 log.error(f'wait_for_element: Timeout while waiting for element {selector}')
                 raise TimeoutException(f'wait_for_element: Timeout while waiting for element {selector}', ex.screen, ex.stacktrace)
+
+
+    def get_element(self, id=None, css_selector=None, class_name=None, xpath=None, link_text=None ):
+        if id:
+            by = By.ID
+            selector = id
+        elif css_selector:
+            by = By.CSS_SELECTOR
+            selector = css_selector
+        elif class_name:
+            by = By.CLASS_NAME
+            selector = class_name
+        elif xpath:
+            by = By.XPATH
+            selector = xpath
+        elif link_text:
+            by = By.LINK_TEXT
+            selector = link_text
+        else:
+            raise ValueError("get_element must use one kwarg of: id, css_selector, class_name, xpath, link_text")
+
+        try:
+            timeout=self.config_options['timeout']
+            WebDriverWait(self, timeout).until(EC.presence_of_element_located((by, selector)))
+            elms = self.find_elements(by, selector)
+            if not elms:
+                raise NoSuchElementException(f'get_element: Element {selector} not found on page {self.url}')
+            if elms[0].is_displayed() or elms[0].is_enabled():
+                return elms[0]
+            else:
+                raise ElementNotVisibleException(f'get_element: Element {selector} not displayed or not enabled on page {self.url}')
+
+
+        except TimeoutException as ex:
+            log.error(f'get_element: Timeout while waiting for element {selector}')
+            raise TimeoutException(f'get_element: Timeout while waiting for element {selector} on page {self.url}', ex.screen, ex.stacktrace)
+
+    def f_send_keys(self, text, id=None, css_selector=None, class_name=None, xpath=None, link_text=None):
+        return self.get_element(id,css_selector,class_name,xpath,link_text).send_keys(text)
+
+    def f_click(self, id=None, css_selector=None, class_name=None, xpath=None, link_text=None):
+        return self.get_element(id,css_selector,class_name,xpath,link_text).click()
+
+    def f_get_text(self, id=None, css_selector=None, class_name=None, xpath=None, link_text=None):
+        return self.get_element(id,css_selector,class_name,xpath,link_text).Text
+
+    def f_get_attr(self, attribute_name, id=None, css_selector=None, class_name=None, xpath=None, link_text=None):
+        return self.get_element(id,css_selector,class_name,xpath,link_text).get_attribute(attribute_name)
 
     @property
     def url(self):
@@ -88,7 +136,6 @@ class KrWebElementWrapper:
 
     def unwrap(self):
         return self.webelement
-
 
 class KrMissingElement:
 
@@ -127,9 +174,20 @@ class KrTestCase(unittest.TestCase):
         profile.accept_untrusted_certs = True
         profile.headless = headless
         profile.set_preference('security.fileuri.strict_origin_policy', False)
+        profile.set_preference("http.response.timeout", self.config_options['timeout'])
+        profile.set_preference("dom.max_script_run_time", self.config_options['timeout'])
         o = Options()
         o.set_headless(self.config_options['headless'])
-        return KrFirefox(firefox_profile=profile, options=o)
+        return KrDriver(firefox_profile=profile, options=o)
+
+    def _buildChromeDriver(self, headless=False):
+        profile = FirefoxProfile()
+        profile.accept_untrusted_certs = True
+        profile.headless = headless
+        profile.set_preference('security.fileuri.strict_origin_policy', False)
+        o = Options()
+        o.set_headless(self.config_options['headless'])
+        return KrDriver(firefox_profile=profile, options=o)
 
     def _cleanupDbWrites(self):
         client = MongoClient(MONGO_URI)
@@ -146,9 +204,18 @@ class KrTestCase(unittest.TestCase):
             log.debug(f'{self.__module__}/__data__/setUp.js:{stdout}')
 
         log.debug(f'config_options for {self}:\n{self.config_options}')
+
+        self.browser = self.config_options['browser']
         self.url = self.config_options['url']
         self.cleanup = self.config_options['cleanup']
-        self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
+        if 'browser' not in self.config_options:
+            self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
+
+        if self.browser == 'Firefox':
+            self.driver = self._buildFirefoxDriver(headless=self.config_options['headless'])
+        self.driver.set_page_load_timeout(self.config_options['timeout'])
+        self.driver.implicitly_wait(self.config_options['timeout'])
+        self.driver.set_script_timeout(self.config_options['timeout'])
         if 'url' in self.config_options:
             self.driver.get(self.config_options['url'])
         # print(self.__module__) TODO: this is the name that should be used with errors
@@ -162,4 +229,5 @@ class KrTestCase(unittest.TestCase):
             pass
         elif self.config_options['cleanup'] == 'always':
             self.driver.quit()
+
 
